@@ -1,0 +1,57 @@
+services:
+
+  # リファクタリング前 DB（イミュータブル適用前・問題のある構造）
+  db-before:
+    image: mysql:8.4
+    container_name: db-schema-refactoring-before
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: schema_before
+      TZ: Asia/Tokyo
+    ports:
+      - "3506:3306"
+    volumes:
+      - db-before-data:/var/lib/mysql
+      - ./docker/init-before:/docker-entrypoint-initdb.d:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+  # リファクタリング後 DB（イミュータブル適用後・問題解消済み）
+  db-after:
+    image: mysql:8.4
+    container_name: db-schema-refactoring-after
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: schema_after
+      TZ: Asia/Tokyo
+    ports:
+      - "3507:3306"
+    volumes:
+      - db-after-data:/var/lib/mysql
+      - ./docker/init-after:/docker-entrypoint-initdb.d:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+  # リファクタリング後 DB（ミュータブルモデル・問題解消済み）
+  db-mutable-after:
+    image: mysql:8.4
+    container_name: db-schema-refactoring-mutable-after
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: schema_mutable_after
+      TZ: Asia/Tokyo
+    ports:
+      - "3508:3306"
+    volumes:
+      - db-mutable-after-data:/var/lib/mysql
+      - ./docker/init-mutable-after:/docker-entrypoint-initdb.d:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db-before-data:
+  db-after-data:
+  db-mutable-after-data:
